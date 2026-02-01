@@ -1,0 +1,105 @@
+# 🚀 DÉPLOIEMENT RAPIDE - RÉSUMÉ
+
+## Solution Recommandée : Git + Script
+
+### 🔧 Configuration Initiale (1 fois)
+
+**1. Sur votre PC (local) :**
+```bash
+cd C:\laragon\www\haccp.grolleau\haccp-app
+git init
+git add .
+git commit -m "Version initiale"
+
+# Créer un repo sur GitHub/GitLab puis :
+git remote add origin https://github.com/VOTRE-COMPTE/haccp-app.git
+git push -u origin main
+```
+
+**2. Sur cPanel (serveur) :**
+```bash
+# Via Terminal SSH ou Terminal cPanel
+cd ~/public_html
+git clone https://github.com/VOTRE-COMPTE/haccp-app.git .
+
+# Configuration
+cp .env.example .env
+nano .env  # Modifier DB_DATABASE, DB_USERNAME, DB_PASSWORD
+
+# Installation
+composer install --no-dev --optimize-autoloader
+php artisan key:generate
+php artisan migrate --force
+php artisan storage:link
+chmod +x deploy.sh
+chmod -R 755 storage bootstrap/cache
+```
+
+---
+
+## ⚡ Mise à Jour Quotidienne (30 secondes)
+
+### Sur votre PC :
+
+**Option A - Script automatique :**
+```bash
+Double-cliquer sur : deploy-local.bat
+# Répondre aux questions, c'est tout !
+```
+
+**Option B - Commandes manuelles :**
+```bash
+git add .
+git commit -m "Vos modifications"
+git push origin main
+```
+
+### Sur cPanel :
+
+```bash
+# Se connecter en SSH ou Terminal cPanel
+cd ~/public_html
+./deploy.sh
+```
+
+**C'est tout ! ✅**
+
+---
+
+## 📋 Checklist Rapide
+
+**Avant chaque déploiement :**
+- [x] Testé localement ?
+- [x] Sauvegarde BDD faite ?
+- [x] Commit + Push Git fait ?
+
+**Commande magique sur cPanel :**
+```bash
+./deploy.sh
+```
+
+---
+
+## 🆘 Problèmes Courants
+
+**Erreur 500 :**
+```bash
+chmod -R 755 storage bootstrap/cache
+php artisan optimize:clear
+```
+
+**BDD pas à jour :**
+```bash
+php artisan migrate --force
+```
+
+**CSS/JS ne chargent pas :**
+```bash
+php artisan storage:link
+```
+
+---
+
+## 📞 Support
+
+Voir le guide complet : [DEPLOIEMENT.md](DEPLOIEMENT.md)

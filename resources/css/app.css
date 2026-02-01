@@ -1,0 +1,386 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== OPTIMISATION ÉCRAN TACTILE ===== */
+
+/* Augmenter la taille globale des textes */
+@layer base {
+    body {
+        @apply text-lg;
+    }
+
+    button, a.btn, input, select, textarea {
+        @apply text-lg;
+    }
+
+    h1 {
+        @apply text-4xl font-bold;
+    }
+
+    h2 {
+        @apply text-3xl font-bold;
+    }
+
+    h3 {
+        @apply text-2xl font-bold;
+    }
+
+    label {
+        @apply text-lg font-semibold;
+    }
+}
+
+/* Agrandir tous les boutons */
+@layer components {
+    button, a[class*="button"], a[class*="btn"] {
+        @apply py-3 px-6 min-h-12;
+    }
+
+    /* Inputs et selects plus grands */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    input[type="datetime-local"],
+    input[type="number"],
+    select,
+    textarea {
+        @apply border-2 border-gray-300 py-3 px-4 text-lg;
+    }
+
+    /* Checkboxes et radios plus grands */
+    input[type="checkbox"],
+    input[type="radio"] {
+        @apply w-6 h-6;
+    }
+
+    /* Ajouter de l'espacement global */
+    .space-y-2 { @apply space-y-4; }
+    .space-y-3 { @apply space-y-6; }
+    .space-y-4 { @apply space-y-6; }
+    .gap-2 { @apply gap-3; }
+    .gap-3 { @apply gap-4; }
+    .gap-4 { @apply gap-6; }
+
+    /* Tables : augmenter hauteur lignes */
+    tbody tr {
+        @apply text-lg;
+    }
+
+    td {
+        @apply py-4;
+    }
+
+    th {
+        @apply py-4 text-lg;
+    }
+
+    /* Messages de succès/erreur plus visibles */
+    .bg-green-50 {
+        @apply text-lg p-6 border-l-4 border-green-500;
+    }
+
+    .bg-red-50 {
+        @apply text-lg p-6 border-l-4 border-red-500;
+    }
+}
+
+/* ===== THEME STYLING (inspiration ePackPro) ===== */
+:root {
+    --green-900: #1f4d45;
+    --green-800: #2e5b51;
+    --green-500: #6bbf7a;
+    --gray-50: #f5f7fb;
+    --gray-100: #eef3fb;
+    --gray-300: #d7dadd;
+    --shadow-soft: 0 18px 38px rgba(0, 0, 0, 0.14);
+    --shadow-card: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.touch-theme {
+    background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.4), transparent 45%),
+        radial-gradient(circle at 80% 0%, rgba(107, 191, 122, 0.12), transparent 40%),
+        var(--gray-300);
+    color: #1f2d2d;
+}
+
+.touch-shell {
+    max-width: 1280px;
+    margin: 20px auto;
+    background: var(--gray-100);
+    border-radius: 20px;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.touch-main {
+    padding: 28px;
+}
+
+.touch-page-header {
+    background: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Top navigation */
+.touch-topbar {
+    background: var(--green-900);
+    color: #f8fffb;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+.touch-topbar-inner {
+    padding: 12px 22px;
+}
+
+.touch-topbar-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.touch-branding {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.touch-logo-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.touch-brand-name {
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: #e8f7ef;
+}
+
+.touch-nav {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.touch-nav-link {
+    border: none !important;
+    padding: 10px 14px !important;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #f7fffb !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.touch-nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.touch-nav-link.border-indigo-400,
+.touch-nav-link[aria-current="page"] {
+    background: linear-gradient(135deg, var(--green-500), var(--green-800));
+    color: #ffffff !important;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+}
+
+.touch-user-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #f8fffb;
+    border-radius: 12px;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.touch-hamburger {
+    display: flex;
+    align-items: center;
+}
+
+.touch-hamburger-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    transition: all 0.2s;
+    min-width: 48px;
+    min-height: 48px;
+}
+
+.touch-hamburger-btn:active {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0.95);
+}
+
+.touch-responsive-menu {
+    background: #ffffff;
+    padding: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.touch-responsive-link {
+    display: block;
+    padding: 16px 24px;
+    font-size: 1.125rem;
+    border-left: 4px solid transparent;
+    transition: all 0.2s;
+}
+
+.touch-responsive-link:active,
+.touch-responsive-link:hover {
+    background: #f0f9f4;
+    border-left-color: #6bbf7a;
+}
+
+.touch-responsive-link {
+    border-left-width: 0 !important;
+    padding: 12px 16px !important;
+    border-radius: 10px;
+    margin: 0 10px;
+    color: var(--green-900) !important;
+    font-weight: 600;
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.touch-responsive-link.border-indigo-400,
+.touch-responsive-link[aria-current="page"] {
+    background: linear-gradient(135deg, var(--green-500), var(--green-800));
+    color: #ffffff !important;
+    box-shadow: var(--shadow-card);
+}
+
+/* Cards / panels */
+.touch-shell .bg-white {
+    background: #fdfefe;
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.touch-shell section,
+.touch-shell form,
+.touch-shell article {
+    border-radius: 16px;
+}
+
+.touch-shell input,
+.touch-shell select,
+.touch-shell textarea {
+    border-radius: 12px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.touch-shell button,
+.touch-shell [type="submit"],
+.touch-shell .btn,
+.touch-shell a.btn {
+    background: linear-gradient(135deg, var(--green-800), var(--green-900));
+    color: #fdfefe;
+    border: none;
+    border-radius: 14px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.16);
+}
+
+.touch-shell button:hover,
+.touch-shell [type="submit"]:hover,
+.touch-shell .btn:hover,
+.touch-shell a.btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+.touch-shell table {
+    border-radius: 16px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: var(--shadow-card);
+}
+
+.touch-shell thead {
+    background: var(--green-900);
+    color: #fdfefe;
+}
+
+.touch-shell tbody tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+/* Tile inspiration */
+.tile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 18px;
+}
+
+.tile-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.tile-card .tile-title {
+    font-weight: 700;
+    color: var(--green-900);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.tile-card.tile-alert {
+    background: linear-gradient(180deg, #ffdfdf, #ffc4c4);
+    color: #8b1a1a;
+    border-color: rgba(139, 26, 26, 0.18);
+}
+
+.tile-card.tile-success {
+    background: linear-gradient(180deg, #e7f8ec, #d3f1e2);
+    color: #0f3f2f;
+    border-color: rgba(31, 77, 69, 0.2);
+}
+
+/* Modal tone */
+.touch-shell .modal-backdrop,
+.touch-shell .fixed.inset-0 {
+    background: rgba(31, 77, 69, 0.45);
+}
+
+.touch-shell .modal-content {
+    border-radius: 18px;
+    box-shadow: 0 22px 44px rgba(0, 0, 0, 0.32);
+    overflow: hidden;
+}
+
+.touch-shell .modal-header {
+    background: var(--green-900);
+    color: #ffffff;
+    padding: 16px 20px;
+    font-weight: 700;
+}
