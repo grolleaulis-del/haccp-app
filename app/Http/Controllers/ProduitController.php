@@ -25,10 +25,21 @@ class ProduitController extends Controller
             $query->where('nom', 'LIKE', '%' . $request->search . '%');
         }
 
-        $produits = $query->orderBy('famille')->orderBy('nom')->paginate(20);
+        $produits = $query->orderBy('famille')->orderBy('nom')->get();
         $familles = Produit::distinct()->orderBy('famille')->pluck('famille');
 
-        return view('produits.index', compact('produits', 'familles'));
+        $familleEmojis = [
+            'HUITRES' => '🦪',
+            'HUITRES DIVERS' => '🦪',
+            'Coquillage' => '🐚',
+            'COQUILLAGES' => '🐚',
+            'Crustacé' => '🦐',
+            'FRUITS DE MER' => '🦑',
+            'DECLASSEES' => '📦',
+            'IRLANDE' => '🇮🇪',
+        ];
+
+        return view('produits.index', compact('produits', 'familles', 'familleEmojis'));
     }
 
     /**
