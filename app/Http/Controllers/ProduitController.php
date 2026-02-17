@@ -195,6 +195,57 @@ class ProduitController extends Controller
     }
 
     /**
+     * Bulk update (toggle scan/cuisson/actif, delete) via AJAX
+     */
+    public function bulkUpdate(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        $action = $request->input('action');
+
+        if (empty($ids) || !$action) {
+            return response()->json(['success' => false, 'message' => 'Données manquantes']);
+        }
+
+        $produits = Produit::whereIn('id', $ids)->get();
+        $count = $produits->count();
+
+        switch ($action) {
+            case 'toggle_scan':
+                foreach ($produits as $p) {
+                    $p->update(['visible_scan' => !$p->visible_scan]);
+                }
+                return response()->json(['success' => true, 'message' => "$count produit(s) modifié(s)"]);
+
+            case 'toggle_cuisson':
+                foreach ($produits as $p) {
+                    $p->update(['visible_cuisson' => !$p->visible_cuisson]);
+                }
+                return response()->json(['success' => true, 'message' => "$count produit(s) modifié(s)"]);
+
+            case 'toggle_actif':
+                foreach ($produits as $p) {
+                    $p->update(['actif' => !$p->actif]);
+                }
+                return response()->json(['success' => true, 'message' => "$count produit(s) modifié(s)"]);
+
+            case 'delete':
+                $deleted = 0;
+                foreach ($produits as $p) {
+                    if (!$p->lots()->exists()) {
+                        if ($p->image) {
+                            \Illuminate\Support\Facades\Storage::disk('public')->delete($p->image);
+                        }
+                        $p->delete();
+                        $deleted++;
+                    }
+                }
+                return response()->json(['success' => true, 'message' => "$deleted produit(s) supprimé(s)"]);
+
+            default:
+                return response()->json(['success' => false, 'message' => 'Action inconnue']);
+        }
+    }
+    /**
      * Toggle Visibilité (Nouveau)
      */
     public function toggleVisibility(Request $request)

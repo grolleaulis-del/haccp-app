@@ -89,6 +89,9 @@ Route::post('/lots/destroy-multiple', [ScanEtiquetteController::class, 'destroyM
         // Produits - suppression multiple (route séparée pour éviter conflit avec resource)
         Route::post('admin/produits/delete-bulk', [ProduitController::class, 'destroyMultiple'])->name('produits.destroy.multiple');
 
+        // Produits - bulk update (toggle scan/cuisson/actif, delete)
+        Route::post('produits/bulk-update', [ProduitController::class, 'bulkUpdate'])->name('produits.bulk-update');
+
         // Produits - routes spéciales AVANT le resource
         Route::get('produits/import', [ProduitController::class, 'showImport'])->name('produits.import');
         Route::post('produits/import', [ProduitController::class, 'import'])->name('produits.import.store');
