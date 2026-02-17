@@ -74,12 +74,8 @@
             🚫 Inactifs
         </button>
         <button @click="attrFilter = attrFilter === 'dlc' ? '' : 'dlc'" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition"
-                :style="attrFilter === 'dlc' ? 'background:#374151;color:#fff' : 'background:#f3f4f6;color:#374151'">
-            📅 DLC
-        </button>
-        <button @click="attrFilter = attrFilter === 'dlc_fourn' ? '' : 'dlc_fourn'" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition"
-                :style="attrFilter === 'dlc_fourn' ? 'background:#ea580c;color:#fff' : 'background:#fff7ed;color:#ea580c'">
-            📅 DLC Fourn.
+                :style="attrFilter === 'dlc' ? 'background:#ea580c;color:#fff' : 'background:#fff7ed;color:#ea580c'">
+            📅 DLC en cours
         </button>
         <button @click="attrFilter = attrFilter === 'no_scan' ? '' : 'no_scan'" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition"
                 :style="attrFilter === 'no_scan' ? 'background:#6b7280;color:#fff' : 'background:#f3f4f6;color:#6b7280'">
@@ -197,7 +193,7 @@ function produitManager() {
             if (this.attrFilter === 'scan') return p.scan == 1;
             if (this.attrFilter === 'cuisson') return p.cuisson == 1;
             if (this.attrFilter === 'inactif') return p.actif == 0;
-            if (this.attrFilter === 'dlc') return p.dlc > 0;
+            if (this.attrFilter === 'dlc') return p.dlc > 0 || p.dlc_fourn == true;
             if (this.attrFilter === 'dlc_fourn') return p.dlc_fourn == true;
             if (this.attrFilter === 'no_scan') return p.scan == 0;
             if (this.attrFilter === 'no_cuisson') return p.cuisson == 0;
