@@ -117,7 +117,7 @@
     <div class="space-y-2">
         @foreach($produits as $produit)
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex items-center gap-3 transition"
-                 x-show="(familleFilter === '' || familleFilter === '{{ $produit->famille }}') && matchesAttr({{ json_encode(['scan' => $produit->visible_scan, 'cuisson' => $produit->visible_cuisson, 'actif' => $produit->actif, 'dlc' => $produit->dlc_cuisson_defaut_jours, 'dlc_fourn' => $produit->dlc_fournisseur ? true : false]) }}) && matchesSearch('{{ addslashes($produit->nom) }}', '{{ addslashes($produit->famille) }}')"
+                 x-show="(familleFilter === '' || familleFilter === '{{ $produit->famille }}') && matchesAttr({{ json_encode(['scan' => $produit->visible_scan ? 1 : 0, 'cuisson' => $produit->visible_cuisson ? 1 : 0, 'actif' => $produit->actif ? 1 : 0, 'dlc' => $produit->dlc_cuisson_defaut_jours ?? 0, 'dlc_fourn' => $produit->dlc_fournisseur ? 1 : 0]) }}) && matchesSearch('{{ addslashes($produit->nom) }}', '{{ addslashes($produit->famille) }}')"
                  :class="selectedIds.includes({{ $produit->id }}) ? 'ring-2 ring-blue-500' : ''"
                  style="{{ !$produit->actif ? 'opacity:0.5;' : '' }}">
                 
@@ -193,8 +193,8 @@ function produitManager() {
             if (this.attrFilter === 'scan') return p.scan == 1;
             if (this.attrFilter === 'cuisson') return p.cuisson == 1;
             if (this.attrFilter === 'inactif') return p.actif == 0;
-            if (this.attrFilter === 'dlc') return p.dlc > 0 || p.dlc_fourn == true;
-            if (this.attrFilter === 'dlc_fourn') return p.dlc_fourn == true;
+            if (this.attrFilter === 'dlc') return p.dlc > 0 || p.dlc_fourn == 1;
+            if (this.attrFilter === 'dlc_fourn') return p.dlc_fourn == 1;
             if (this.attrFilter === 'no_scan') return p.scan == 0;
             if (this.attrFilter === 'no_cuisson') return p.cuisson == 0;
             return true;
