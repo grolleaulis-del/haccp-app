@@ -38,6 +38,13 @@
         </a>
     </div>
 
+    <!-- Recherche -->
+    <div class="mb-4">
+        <input type="text" x-model="search" placeholder="🔍 Rechercher un produit..."
+               class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+               style="background:#f9fafb;">
+    </div>
+
     <!-- Filtres famille -->
     <div class="flex gap-2 overflow-x-auto pb-2 mb-4 -mx-4 px-4" style="-webkit-overflow-scrolling:touch;">
         <button @click="familleFilter = ''" class="px-3 py-2 rounded-full text-sm font-bold whitespace-nowrap transition"
@@ -114,7 +121,7 @@
     <div class="space-y-2">
         @foreach($produits as $produit)
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex items-center gap-3 transition"
-                 x-show="(familleFilter === '' || familleFilter === '{{ $produit->famille }}') && matchesAttr({{ json_encode(['scan' => $produit->visible_scan, 'cuisson' => $produit->visible_cuisson, 'actif' => $produit->actif, 'dlc' => $produit->dlc_cuisson_defaut_jours, 'dlc_fourn' => $produit->dlc_fournisseur ? true : false]) }})"
+                 x-show="(familleFilter === '' || familleFilter === '{{ $produit->famille }}') && matchesAttr({{ json_encode(['scan' => $produit->visible_scan, 'cuisson' => $produit->visible_cuisson, 'actif' => $produit->actif, 'dlc' => $produit->dlc_cuisson_defaut_jours, 'dlc_fourn' => $produit->dlc_fournisseur ? true : false]) }}) && matchesSearch('{{ addslashes($produit->nom) }}', '{{ addslashes($produit->famille) }}')"
                  :class="selectedIds.includes({{ $produit->id }}) ? 'ring-2 ring-blue-500' : ''"
                  style="{{ !$produit->actif ? 'opacity:0.5;' : '' }}">
                 
@@ -179,6 +186,12 @@ function produitManager() {
         selectedIds: [],
         familleFilter: '',
         attrFilter: '',
+        search: '',
+        matchesSearch(nom, famille) {
+            if (this.search === '') return true;
+            const q = this.search.toLowerCase();
+            return nom.toLowerCase().includes(q) || famille.toLowerCase().includes(q);
+        },
         matchesAttr(p) {
             if (this.attrFilter === '') return true;
             if (this.attrFilter === 'scan') return p.scan == 1;

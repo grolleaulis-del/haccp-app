@@ -135,9 +135,13 @@
                                     <span class="font-bold text-gray-800">Actif</span>
                                     <span class="text-xs text-gray-500">Le produit peut être utilisé</span>
                                 </span>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" name="actif" value="1" class="sr-only peer" {{ old('actif', $produit->actif) ? 'checked' : '' }}>
-                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-4 ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;">
+                                    <input type="checkbox" name="actif" value="1" {{ old('actif', $produit->actif) ? 'checked' : '' }}
+                                           style="position:absolute;opacity:0;width:0;height:0;"
+                                           onchange="this.parentElement.querySelector('span').style.background=this.checked?'#2563eb':'#d1d5db'; this.parentElement.querySelector('span span').style.transform=this.checked?'translateX(20px)':'translateX(0)'">
+                                    <span style="position:absolute;inset:0;border-radius:12px;transition:0.3s;background:{{ old('actif', $produit->actif) ? '#2563eb' : '#d1d5db' }};">
+                                        <span style="position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:0.3s;transform:{{ old('actif', $produit->actif) ? 'translateX(20px)' : 'translateX(0)' }};"></span>
+                                    </span>
                                 </label>
                             </div>
                             <hr class="border-gray-200">
@@ -146,9 +150,13 @@
                                     <span class="font-bold text-gray-800">Module Scan Étiquette</span>
                                     <span class="text-xs text-gray-500">Visible dans Scan</span>
                                 </span>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" name="visible_scan" value="1" class="sr-only peer" {{ old('visible_scan', $produit->visible_scan) ? 'checked' : '' }}>
-                                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-4 ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                                <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;">
+                                    <input type="checkbox" name="visible_scan" value="1" {{ old('visible_scan', $produit->visible_scan) ? 'checked' : '' }}
+                                           style="position:absolute;opacity:0;width:0;height:0;"
+                                           onchange="this.parentElement.querySelector('span').style.background=this.checked?'#16a34a':'#d1d5db'; this.parentElement.querySelector('span span').style.transform=this.checked?'translateX(20px)':'translateX(0)'">
+                                    <span style="position:absolute;inset:0;border-radius:12px;transition:0.3s;background:{{ old('visible_scan', $produit->visible_scan) ? '#16a34a' : '#d1d5db' }};">
+                                        <span style="position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:0.3s;transform:{{ old('visible_scan', $produit->visible_scan) ? 'translateX(20px)' : 'translateX(0)' }};"></span>
+                                    </span>
                                 </label>
                             </div>
                             <hr class="border-gray-200">
@@ -157,9 +165,13 @@
                                     <span class="font-bold text-gray-800">Module Cuisson</span>
                                     <span class="text-xs text-gray-500">Visible dans Cuisson</span>
                                 </span>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" name="visible_cuisson" value="1" class="sr-only peer" {{ old('visible_cuisson', $produit->visible_cuisson) ? 'checked' : '' }}>
-                                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-4 ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                                <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;">
+                                    <input type="checkbox" name="visible_cuisson" value="1" {{ old('visible_cuisson', $produit->visible_cuisson) ? 'checked' : '' }}
+                                           style="position:absolute;opacity:0;width:0;height:0;"
+                                           onchange="this.parentElement.querySelector('span').style.background=this.checked?'#16a34a':'#d1d5db'; this.parentElement.querySelector('span span').style.transform=this.checked?'translateX(20px)':'translateX(0)'">
+                                    <span style="position:absolute;inset:0;border-radius:12px;transition:0.3s;background:{{ old('visible_cuisson', $produit->visible_cuisson) ? '#16a34a' : '#d1d5db' }};">
+                                        <span style="position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:0.3s;transform:{{ old('visible_cuisson', $produit->visible_cuisson) ? 'translateX(20px)' : 'translateX(0)' }};"></span>
+                                    </span>
                                 </label>
                             </div>
                         </div>
