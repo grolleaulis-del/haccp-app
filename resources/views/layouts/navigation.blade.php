@@ -39,8 +39,14 @@
                             <a href="{{ route('cuisson-refroidissement.index') }}" class="block w-full text-left px-4 py-3 text-gray-800 hover:bg-blue-50 text-sm">
                                 🔥 Cuisson/Refroidissement
                             </a>
+                            <a href="{{ route('settings.index') }}" class="block w-full text-left px-4 py-3 text-gray-800 hover:bg-blue-50 text-sm">
+                                ⚙️ Paramètres
+                            </a>
                             <a href="{{ route('produits.index') }}" class="block w-full text-left px-4 py-3 text-gray-800 hover:bg-blue-50 text-sm">
-                                🏷️ Produits
+                                📋 Produits
+                            </a>
+                            <a href="{{ route('familles.index') }}" class="block w-full text-left px-4 py-3 text-gray-800 hover:bg-blue-50 text-sm">
+                                🏷️ Familles Produit
                             </a>
                             <a href="{{ route('arrivages.index') }}" class="block w-full text-left px-4 py-3 text-gray-800 hover:bg-blue-50 text-sm">
                                 🚚 Arrivages
@@ -51,8 +57,11 @@
                             <a href="{{ route('temperatures.index') }}" class="block w-full text-left px-4 py-3 text-gray-800 hover:bg-blue-50 text-sm">
                                 🌡️ Températures
                             </a>
-                            <a href="{{ route('nettoyage.index') }}" class="block w-full text-left px-4 py-3 text-gray-800 hover:bg-blue-50 rounded-b-lg text-sm">
+                            <a href="{{ route('nettoyage.index') }}" class="block w-full text-left px-4 py-3 text-gray-800 hover:bg-blue-50 text-sm">
                                 🧹 Nettoyage
+                            </a>
+                            <a href="{{ route('nettoyage.historique') }}" class="block w-full text-left px-4 py-3 text-gray-800 hover:bg-blue-50 rounded-b-lg text-sm">
+                                📜 Historique Nettoyage
                             </a>
                         </div>
                     </div>
@@ -100,6 +109,14 @@
 
                         <x-dropdown-link :href="route('settings.index')">
                             ⚙️ {{ __('Paramètres') }}
+                        </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('produits.index')">
+                            📋 {{ __('Produits') }}
+                        </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('familles.index')">
+                            🏷️ {{ __('Familles Produit') }}
                         </x-dropdown-link>
 
                         <x-dropdown-link :href="route('profile.edit')">
@@ -172,9 +189,7 @@
             <x-responsive-nav-link class="text-lg py-4 px-5 font-medium border-l-4 border-transparent hover:border-blue-500 hover:bg-blue-50" :href="route('usage-quotidien.historique')" :active="request()->routeIs('usage-quotidien.historique')">
                 📜 Historique Lots
             </x-responsive-nav-link>
-            <x-responsive-nav-link class="text-lg py-4 px-5 font-medium border-l-4 border-transparent hover:border-blue-500 hover:bg-blue-50" :href="route('produits.index')" :active="request()->routeIs('produits.*')">
-                🏷️ Produits
-            </x-responsive-nav-link>
+
             <x-responsive-nav-link class="text-lg py-4 px-5 font-medium border-l-4 border-transparent hover:border-blue-500 hover:bg-blue-50" :href="route('arrivages.index')" :active="request()->routeIs('arrivages.*')">
                 🚚 Arrivages
             </x-responsive-nav-link>
@@ -184,8 +199,11 @@
             <x-responsive-nav-link class="text-lg py-4 px-5 font-medium border-l-4 border-transparent hover:border-blue-500 hover:bg-blue-50" :href="route('temperatures.index')" :active="request()->routeIs('temperatures.*')">
                 🌡️ Températures
             </x-responsive-nav-link>
-            <x-responsive-nav-link class="text-lg py-4 px-5 font-medium border-l-4 border-transparent hover:border-blue-500 hover:bg-blue-50" :href="route('nettoyage.index')" :active="request()->routeIs('nettoyage.*')">
+            <x-responsive-nav-link class="text-lg py-4 px-5 font-medium border-l-4 border-transparent hover:border-blue-500 hover:bg-blue-50" :href="route('nettoyage.index')" :active="request()->routeIs('nettoyage.index')">
                 🧹 Nettoyage
+            </x-responsive-nav-link>
+            <x-responsive-nav-link class="text-lg py-4 px-5 font-medium border-l-4 border-transparent hover:border-blue-500 hover:bg-blue-50" :href="route('nettoyage.historique')" :active="request()->routeIs('nettoyage.historique')">
+                📜 Historique Nettoyage
             </x-responsive-nav-link>
             <x-responsive-nav-link class="text-lg py-4 px-5 font-medium border-l-4 border-transparent hover:border-blue-500 hover:bg-blue-50" :href="route('cuisson-refroidissement.index')" :active="request()->routeIs('cuisson-refroidissement.*')">
                 🔥 Cuisson/Refroidissement
@@ -206,6 +224,14 @@
 
                 <x-responsive-nav-link class="text-lg py-4 px-5 font-medium border-l-4 border-transparent hover:border-purple-500 hover:bg-purple-50" :href="route('settings.index')">
                     ⚙️ Paramètres
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link class="text-lg py-4 px-5 font-medium border-l-4 border-transparent hover:border-purple-500 hover:bg-purple-50" :href="route('produits.index')">
+                    📋 Produits
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link class="text-lg py-4 px-5 font-medium border-l-4 border-transparent hover:border-purple-500 hover:bg-purple-50" :href="route('familles.index')">
+                    🏷️ Familles Produit
                 </x-responsive-nav-link>
 
                 <x-responsive-nav-link class="text-lg py-4 px-5 font-medium border-l-4 border-transparent hover:border-purple-500 hover:bg-purple-50" :href="route('profile.edit')">

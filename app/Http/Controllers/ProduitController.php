@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Famille;
 use App\Models\Produit;
 use Illuminate\Http\Request;
 
@@ -35,7 +36,7 @@ class ProduitController extends Controller
      */
     public function create()
     {
-        $familles = Produit::distinct()->orderBy('famille')->pluck('famille');
+        $familles = Famille::orderBy('nom')->pluck('nom');
         return view('produits.create', compact('familles'));
     }
 
@@ -47,15 +48,23 @@ class ProduitController extends Controller
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
             'famille' => 'required|string|max:255',
+            'image' => 'nullable|image|max:2048',
             'mode_tracabilite' => 'required|in:etiquette_photo,code_interne',
             'dlc_cuisson_defaut_jours' => 'nullable|integer|min:1',
             'dlc_congelation_defaut_jours' => 'nullable|integer|min:1',
-            'actif' => 'boolean',
+            'dlc_fournisseur' => 'nullable|date',
         ]);
 
-        $validated['actif'] = $request->has('actif');
+        $data = $validated;
+        $data['actif'] = $request->has('actif');
+        $data['visible_scan'] = $request->has('visible_scan');
+        $data['visible_cuisson'] = $request->has('visible_cuisson');
 
-        Produit::create($validated);
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('produits', 'public');
+        }
+
+        Produit::create($data);
 
         return redirect()->route('produits.index')
             ->with('success', 'Produit créé avec succès.');
@@ -66,7 +75,7 @@ class ProduitController extends Controller
      */
     public function edit(Produit $produit)
     {
-        $familles = Produit::distinct()->orderBy('famille')->pluck('famille');
+        $familles = Famille::orderBy('nom')->pluck('nom');
         return view('produits.edit', compact('produit', 'familles'));
     }
 
@@ -78,15 +87,26 @@ class ProduitController extends Controller
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
             'famille' => 'required|string|max:255',
+            'image' => 'nullable|image|max:2048',
             'mode_tracabilite' => 'required|in:etiquette_photo,code_interne',
             'dlc_cuisson_defaut_jours' => 'nullable|integer|min:1',
             'dlc_congelation_defaut_jours' => 'nullable|integer|min:1',
-            'actif' => 'boolean',
+            'dlc_fournisseur' => 'nullable|date',
         ]);
 
-        $validated['actif'] = $request->has('actif');
+        $data = $validated;
+        $data['actif'] = $request->has('actif');
+        $data['visible_scan'] = $request->has('visible_scan');
+        $data['visible_cuisson'] = $request->has('visible_cuisson');
 
-        $produit->update($validated);
+        if ($request->hasFile('image')) {
+            if ($produit->image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($produit->image);
+            }
+            $data['image'] = $request->file('image')->store('produits', 'public');
+        }
+
+        $produit->update($data);
 
         return redirect()->route('produits.index')
             ->with('success', 'Produit mis à jour avec succès.');
@@ -103,6 +123,10 @@ class ProduitController extends Controller
                 ->with('error', 'Impossible de supprimer ce produit car il a des lots associés.');
         }
 
+        if ($produit->image) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($produit->image);
+        }
+
         $produit->delete();
 
         return redirect()->route('produits.index')
@@ -114,21 +138,31 @@ class ProduitController extends Controller
      */
     public function destroyMultiple(Request $request)
     {
-        $validated = $request->validate([
-            'produits' => 'required|array|min:1',
-            'produits.*' => 'exists:produits,id',
-        ], [
-            'produits.required' => 'Veuillez sélectionner au moins un produit.',
-            'produits.min' => 'Veuillez sélectionner au moins un produit.',
-        ]);
+        $ids = $request->input('selected', []);
+        
+        // Support pour le format array simple (si envoyé via JSON/Input hidden) ou checkbox standard
+        if (is_string($ids)) {
+            $ids = json_decode($ids, true);
+        }
+
+        if (empty($ids)) {
+             $validated = $request->validate([
+                'produits' => 'required|array|min:1',
+                'produits.*' => 'exists:produits,id',
+            ]);
+            $ids = $validated['produits'];
+        }
 
         $deleted = 0;
         $errors = [];
 
-        foreach ($validated['produits'] as $produitId) {
+        foreach ($ids as $produitId) {
             $produit = Produit::find($produitId);
 
             if ($produit && !$produit->lots()->exists()) {
+                if ($produit->image) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($produit->image);
+                }
                 $produit->delete();
                 $deleted++;
             } elseif ($produit) {
@@ -138,19 +172,38 @@ class ProduitController extends Controller
 
         if ($deleted === 0 && !empty($errors)) {
             return redirect()->route('produits.index')
-                ->with('error', 'Aucun produit n\'a pu être supprimé. Les produits suivants ont des lots associés : ' . implode(', ', array_slice($errors, 0, 5)));
+                ->with('error', 'Aucun produit supprimé (lots associés).');
         }
 
-        $message = "$deleted produit(s) supprimé(s) avec succès.";
-
+        $message = "$deleted produit(s) supprimé(s).";
         if (!empty($errors)) {
-            $message .= " " . count($errors) . " produit(s) non supprimé(s) (lots associés) : " . implode(', ', array_slice($errors, 0, 5));
-            if (count($errors) > 5) {
-                $message .= "...";
-            }
+            $message .= " Non supprimés : " . implode(', ', array_slice($errors, 0, 5));
         }
 
         return redirect()->route('produits.index')->with('success', $message);
+    }
+
+    /**
+     * Toggle Visibilité (Nouveau)
+     */
+    public function toggleVisibility(Request $request)
+    {
+        $ids = $request->input('selected', []);
+        if (is_string($ids)) $ids = json_decode($ids, true);
+        
+        $target = $request->input('target'); // 'scan' or 'cuisson'
+        $action = $request->input('action'); // 'show' or 'hide'
+        
+        if (empty($ids) || !in_array($target, ['scan', 'cuisson']) || !in_array($action, ['show', 'hide'])) {
+            return back()->with('error', 'Requete invalide.');
+        }
+        
+        $field = ($target === 'scan') ? 'visible_scan' : 'visible_cuisson';
+        $value = ($action === 'show');
+        
+        Produit::whereIn('id', $ids)->update([$field => $value]);
+        
+        return back()->with('success', 'Visibilité mise à jour.');
     }
 
     /**

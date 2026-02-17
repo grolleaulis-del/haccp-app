@@ -9,7 +9,7 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <form method="POST" action="{{ route('produits.update', $produit) }}">
+                    <form method="POST" action="{{ route('produits.update', $produit) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -46,6 +46,22 @@
                             @enderror
                         </div>
 
+                        {{-- Image Upload --}}
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Image / Illustration</label>
+                            <div class="flex items-center gap-4">
+                                @if($produit->image_url)
+                                    <div class="w-20 h-20 rounded-lg overflow-hidden border border-gray-200">
+                                        <img src="{{ $produit->image_url }}" class="w-full h-full object-cover">
+                                    </div>
+                                @endif
+                                <div class="flex-1">
+                                    <input type="file" name="image" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                    <p class="text-xs text-gray-500 mt-1">SVG, PNG, JPG (MAX. 2MB)</p>
+                                </div>
+                            </div>
+                        </div>
+
                         {{-- Mode traçabilité --}}
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -55,13 +71,13 @@
                                 <label class="flex items-center">
                                     <input type="radio" name="mode_tracabilite" value="etiquette_photo"
                                            {{ old('mode_tracabilite', $produit->mode_tracabilite) === 'etiquette_photo' ? 'checked' : '' }}
-                                           class="rounded-full border-gray-300 text-blue-600 focus:ring-blue-500">
+                                           class="text-blue-600 focus:ring-blue-500">
                                     <span class="ml-2">Photo de l'étiquette</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="radio" name="mode_tracabilite" value="code_interne"
                                            {{ old('mode_tracabilite', $produit->mode_tracabilite) === 'code_interne' ? 'checked' : '' }}
-                                           class="rounded-full border-gray-300 text-blue-600 focus:ring-blue-500">
+                                           class="text-blue-600 focus:ring-blue-500">
                                     <span class="ml-2">Code interne</span>
                                 </label>
                             </div>
@@ -74,7 +90,7 @@
                             {{-- DLC Cuisson --}}
                             <div>
                                 <label for="dlc_cuisson_defaut_jours" class="block text-sm font-medium text-gray-700 mb-1">
-                                    DLC Cuisson par défaut (jours)
+                                    DLC Cuisson (jours)
                                 </label>
                                 <input type="number" name="dlc_cuisson_defaut_jours" id="dlc_cuisson_defaut_jours" min="1"
                                        value="{{ old('dlc_cuisson_defaut_jours', $produit->dlc_cuisson_defaut_jours) }}"
@@ -87,7 +103,7 @@
                             {{-- DLC Congélation --}}
                             <div>
                                 <label for="dlc_congelation_defaut_jours" class="block text-sm font-medium text-gray-700 mb-1">
-                                    DLC Congélation par défaut (jours)
+                                    DLC Congélation (jours)
                                 </label>
                                 <input type="number" name="dlc_congelation_defaut_jours" id="dlc_congelation_defaut_jours" min="1"
                                        value="{{ old('dlc_congelation_defaut_jours', $produit->dlc_congelation_defaut_jours) }}"
@@ -98,14 +114,54 @@
                             </div>
                         </div>
 
-                        {{-- Actif --}}
-                        <div class="mb-6">
-                            <label class="flex items-center">
-                                <input type="checkbox" name="actif" value="1"
-                                       {{ old('actif', $produit->actif) ? 'checked' : '' }}
-                                       class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <span class="ml-2 text-sm font-medium text-gray-700">Produit actif</span>
-                            </label>
+                        {{-- DLC Fournisseur --}}
+                        <div class="mb-6 bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <h3 class="font-bold text-orange-800 mb-2 text-sm uppercase flex items-center gap-2">
+                                📅 DLC Fournisseur
+                            </h3>
+                            <p class="text-xs text-orange-600 mb-3">Date limite de consommation imprimée par le fournisseur (mayonnaise, beurre, etc.)</p>
+                            <input type="date" name="dlc_fournisseur" id="dlc_fournisseur"
+                                   value="{{ old('dlc_fournisseur', $produit->dlc_fournisseur ? $produit->dlc_fournisseur->format('Y-m-d') : '') }}"
+                                   class="w-full rounded-md border-gray-300 focus:border-orange-500 focus:ring-orange-500 @error('dlc_fournisseur') border-red-500 @enderror">
+                            @error('dlc_fournisseur')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Visibilité & Actif --}}
+                        <div class="mb-8 space-y-3 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <span class="flex flex-col">
+                                    <span class="font-bold text-gray-800">Actif</span>
+                                    <span class="text-xs text-gray-500">Le produit peut être utilisé</span>
+                                </span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="actif" value="1" class="sr-only peer" {{ old('actif', $produit->actif) ? 'checked' : '' }}>
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-4 ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                            <hr class="border-gray-200">
+                             <div class="flex items-center justify-between">
+                                <span class="flex flex-col">
+                                    <span class="font-bold text-gray-800">Module Scan Étiquette</span>
+                                    <span class="text-xs text-gray-500">Visible dans Scan</span>
+                                </span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="visible_scan" value="1" class="sr-only peer" {{ old('visible_scan', $produit->visible_scan) ? 'checked' : '' }}>
+                                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-4 ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                                </label>
+                            </div>
+                            <hr class="border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <span class="flex flex-col">
+                                    <span class="font-bold text-gray-800">Module Cuisson</span>
+                                    <span class="text-xs text-gray-500">Visible dans Cuisson</span>
+                                </span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="visible_cuisson" value="1" class="sr-only peer" {{ old('visible_cuisson', $produit->visible_cuisson) ? 'checked' : '' }}>
+                                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-4 ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                                </label>
+                            </div>
                         </div>
 
                         {{-- Boutons --}}
